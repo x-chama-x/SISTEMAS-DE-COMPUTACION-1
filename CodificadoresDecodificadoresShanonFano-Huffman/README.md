@@ -1,1 +1,1 @@
-Programas codificados en C elaborados con la claude.ai
+Programas codificados en C elaborados con claude.ai
