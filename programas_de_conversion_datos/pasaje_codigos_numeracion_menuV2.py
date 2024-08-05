@@ -576,19 +576,27 @@ def main_menu():
         choice = input("Seleccione una opción (1-7): ")
         
         if choice == '1':
+            clear_screen()
             bcd_conversion()
         elif choice == '2':
+            clear_screen()
             gray_conversion()
         elif choice == '3':
+            clear_screen()
             johnson_conversion()
         elif choice == '4':
+            clear_screen()
             decimal_to_ieee754_conversion()
         elif choice == '5':
+            clear_screen()
             ieee754_to_decimal_conversion()
         elif choice == '6':
             cadena_bits_a_punto_flotante()
         elif choice == '7':
+            clear_screen()
             print("Gracias por usar el programa. ¡Hasta luego!")
+            print("Presione Enter para salir...")
+            input()
             sys.exit(0)
         else:
             print("Opción no válida. Por favor, seleccione una opción del 1 al 7.")
