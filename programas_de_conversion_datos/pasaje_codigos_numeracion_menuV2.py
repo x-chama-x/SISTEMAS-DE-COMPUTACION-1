@@ -73,21 +73,15 @@ def obtener_tipo_exponente():
 
 def convertir_mantisa_decimal(cadena_bits, con_signo, tipo_mantisa):
     if tipo_mantisa == 1:  # Complemento a 1
-        if cadena_bits[0] == '1':
-            # Invertir los bits
-            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-            valor_decimal = int(bits_invertidos, 2)
-            return -valor_decimal
-        else:
-            return int(cadena_bits, 2)
+        # Invertir los bits
+        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+        valor_decimal = int(bits_invertidos, 2)
+        return -valor_decimal if cadena_bits[0] == '1' else valor_decimal
     elif tipo_mantisa == 0:  # Complemento a 2
-        if cadena_bits[0] == '1':
-            # Invertir los bits y sumar 1
-            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-            valor_decimal = int(bits_invertidos, 2) + 1
-            return -valor_decimal
-        else:
-            return int(cadena_bits, 2)
+        # Invertir los bits y sumar 1
+        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+        valor_decimal = int(bits_invertidos, 2) + 1
+        return -valor_decimal if cadena_bits[0] == '1' else valor_decimal
     elif tipo_mantisa == 3:  # Ninguno
         if con_signo:
             signo = -1 if cadena_bits[0] == '1' else 1
@@ -98,21 +92,15 @@ def convertir_mantisa_decimal(cadena_bits, con_signo, tipo_mantisa):
 
 def convertir_exponente_decimal(cadena_bits, con_signo, tipo_exponente):
     if tipo_exponente == 1:  # Complemento a 1
-        if cadena_bits[0] == '1':
-            # Invertir los bits
-            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-            valor_decimal = int(bits_invertidos, 2)
-            return -valor_decimal
-        else:
-            return int(cadena_bits, 2)
+        # Invertir los bits
+        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+        valor_decimal = int(bits_invertidos, 2)
+        return valor_decimal
     elif tipo_exponente == 0:  # Complemento a 2
-        if cadena_bits[0] == '1':
-            # Invertir los bits y sumar 1
-            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-            valor_decimal = int(bits_invertidos, 2) + 1
-            return -valor_decimal
-        else:
-            return int(cadena_bits, 2)
+        # Invertir los bits y sumar 1
+        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+        valor_decimal = int(bits_invertidos, 2) + 1
+        return valor_decimal
     elif tipo_exponente == 3:  # Ninguno
         if con_signo:
             signo = -1 if cadena_bits[0] == '1' else 1
