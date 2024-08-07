@@ -91,23 +91,32 @@ def convertir_mantisa_decimal(cadena_bits, con_signo, tipo_mantisa):
             return int(cadena_bits, 2)
 
 def convertir_exponente_decimal(cadena_bits, con_signo, tipo_exponente):
+    if con_signo:
+        signo = -1 if cadena_bits[0] == '1' else 1
+        cadena_bits = cadena_bits[1:]  # Removemos el bit de signo
+    else:
+        signo = 1
+
     if tipo_exponente == 1:  # Complemento a 1
-        # Invertir los bits
-        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-        valor_decimal = int(bits_invertidos, 2)
-        return valor_decimal
-    elif tipo_exponente == 0:  # Complemento a 2
-        # Invertir los bits y sumar 1
-        bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
-        valor_decimal = int(bits_invertidos, 2) + 1
-        return valor_decimal
-    elif tipo_exponente == 3:  # Ninguno
         if con_signo:
-            signo = -1 if cadena_bits[0] == '1' else 1
-            valor_decimal = int(cadena_bits[1:], 2)
-            return signo * valor_decimal
+            valor_decimal = int(cadena_bits, 2)
+            if signo == -1:
+                valor_decimal = ~valor_decimal & ((1 << len(cadena_bits)) - 1)  # Invertir bits
         else:
-            return int(cadena_bits, 2)
+            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+            valor_decimal = int(bits_invertidos, 2)
+    elif tipo_exponente == 0:  # Complemento a 2
+        if con_signo:
+            valor_decimal = int(cadena_bits, 2)
+            if signo == -1:
+                valor_decimal = (~valor_decimal + 1) & ((1 << len(cadena_bits)) - 1)  # Invertir bits y sumar 1
+        else:
+            bits_invertidos = ''.join('1' if bit == '0' else '0' for bit in cadena_bits)
+            valor_decimal = int(bits_invertidos, 2) + 1
+    elif tipo_exponente == 3:  # Ninguno
+        valor_decimal = int(cadena_bits, 2)
+    
+    return signo * valor_decimal
 
 def calcular_mantisa_fraccionaria(cadena_bits, cant_bits_mantisa, signo_mantisa):
     if signo_mantisa:
@@ -556,8 +565,8 @@ def main_menu():
         print("1. Conversión a códigos BCD")
         print("2. Conversión a código Gray")
         print("3. Conversión a código Johnson")
-        print("4. Conversión de decimal a IEEE754")
-        print("5. Conversión de IEEE754 a decimal")
+        print("4. Conversión de decimal a IEEE754 32 bits")
+        print("5. Conversión de IEEE754 32 bits a decimal")
         print("6. Conversión de cadena de bits a representacion punto flotante")
         print("7. Salir")
         
