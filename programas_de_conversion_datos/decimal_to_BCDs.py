@@ -24,7 +24,7 @@ def decimal_to_bcd_exc3(decimal_str):
         bcd += '.' + ''.join(format(int(d) + 3, '04b') for d in decimal_part)
     return bcd
 
-def decimal_to_bcd_3421(decimal_str):
+def decimal_to_bcd_8421(decimal_str):
     mapping = {'0': '0000', '1': '0001', '2': '0010', '3': '0011',
                '4': '0100', '5': '0101', '6': '0110', '7': '0111',
                '8': '1000', '9': '1001'}
@@ -64,7 +64,7 @@ def print_table(decimal_str):
     print(f"BCD:                {decimal_to_bcd(decimal_str)}")
     print(f"BCD 2421:           {decimal_to_bcd_2421(decimal_str)}")
     print(f"BCD EXC3:           {decimal_to_bcd_exc3(decimal_str)}")
-    print(f"BCD 3421:           {decimal_to_bcd_3421(decimal_str)}")
+    print(f"BCD 8421:           {decimal_to_bcd_8421(decimal_str)}")
     print(f"BCD 5421:           {decimal_to_bcd_5421(decimal_str)}")
     print(f"BCD Empaquetado:    {decimal_to_packed_bcd(decimal_str)}")
     print()

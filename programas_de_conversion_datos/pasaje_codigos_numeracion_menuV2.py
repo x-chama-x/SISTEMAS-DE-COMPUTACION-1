@@ -1,6 +1,49 @@
 import sys
 import os
 
+# Función para limpiar la pantalla
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# FUNCIONES DUPLICADAS DE CONVERSION DE DECIMAL A BINARIO
+
+def decimal_to_binary(decimal, bits):
+    return format(decimal, f'0{bits}b')
+
+def decimal_a_binario(decimal, bits):
+    # Convertir el número decimal a binario y eliminar el prefijo '0b'
+    binario = bin(decimal)[2:]
+    # Rellenar con ceros a la izquierda para asegurar la cantidad de bits
+    binario = binario.zfill(bits)
+    return binario
+
+
+def decimal_a_binario_variacion(num):
+    if num == 0:
+        return "0.0"
+    
+    signo = '-' if num < 0 else ''
+    num = abs(num)
+    entero, decimal = str(num).split('.')
+    entero = int(entero)
+    decimal = float("0." + decimal)
+    
+    binario_entero = bin(entero)[2:]
+    
+    binario_decimal = ""
+    precision = 23
+    while decimal > 0 and len(binario_decimal) < precision:
+        decimal *= 2
+        if decimal >= 1:
+            binario_decimal += "1"
+            decimal -= 1
+        else:
+            binario_decimal += "0"
+    
+    return f"{signo}{binario_entero}.{binario_decimal}"
+
+
+# FUNCIONES DE CONVERSION PUNTO FLOTANTE
 
 def calcular_bits_exponente(cadena_bits, cant_bits_mantisa):
     return len(cadena_bits) - cant_bits_mantisa
@@ -25,7 +68,6 @@ def complemento_a_2(cadena_bits):
             carry = 0
     
     return ''.join(complemento2)
-
 
 def obtener_signo_mantisa():
     tipo_signo = input("¿La mantisa es con signo (BCS) o sin signo (BSS)? ")
@@ -238,11 +280,7 @@ def obtener_cant_bits_mantisa_valida(cadena_bits):
     return cant_bits_mantisa
 
 
-# Función para limpiar la pantalla
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-# Funciones de conversión
+# FUNCIONES DE CONVERSION DE CODIGOS BCD
 def decimal_to_bcd(decimal_str):
     integer_part, _, decimal_part = decimal_str.partition('.')
     bcd = ''.join(format(int(d), '04b') for d in integer_part)
@@ -267,7 +305,7 @@ def decimal_to_bcd_exc3(decimal_str):
         bcd += '.' + ''.join(format(int(d) + 3, '04b') for d in decimal_part)
     return bcd
 
-def decimal_to_bcd_3421(decimal_str):
+def decimal_to_bcd_8421(decimal_str):
     mapping = {'0': '0000', '1': '0001', '2': '0010', '3': '0011',
                '4': '0100', '5': '0101', '6': '0110', '7': '0111',
                '8': '1000', '9': '1001'}
@@ -307,13 +345,12 @@ def print_bcd_table(decimal_str):
     print(f"BCD:                {decimal_to_bcd(decimal_str)}")
     print(f"BCD 2421:           {decimal_to_bcd_2421(decimal_str)}")
     print(f"BCD EXC3:           {decimal_to_bcd_exc3(decimal_str)}")
-    print(f"BCD 3421:           {decimal_to_bcd_3421(decimal_str)}")
+    print(f"BCD 8421:           {decimal_to_bcd_8421(decimal_str)}")
     print(f"BCD 5421:           {decimal_to_bcd_5421(decimal_str)}")
     print(f"BCD Empaquetado:    {decimal_to_packed_bcd(decimal_str)}")
     print()
 
-def decimal_to_binary(decimal, bits):
-    return format(decimal, f'0{bits}b')
+# FUNCIONES DE CONVERSION DE CODIGOS GRAY Y JOHNSON
 
 def binary_to_gray(binary):
     return binary[0] + ''.join(str(int(binary[i]) ^ int(binary[i+1])) for i in range(len(binary)-1))
@@ -332,9 +369,11 @@ def decimal_to_johnson(decimal, bits):
     else:
         return '1' * (2 * bits - decimal) + '0' * (decimal - bits)
 
+# FUNCIONES DE CONVERSION IEEE754
+
 
 def calcular_exponente_real(num):
-    binary_representation = decimal_a_binario(num)
+    binary_representation = decimal_a_binario_variacion(num)
     punto_decimal = binary_representation.index('.')
     first_one_index = binary_representation.index('1')
     if first_one_index < punto_decimal:
@@ -343,7 +382,7 @@ def calcular_exponente_real(num):
         return punto_decimal - first_one_index
 
 def normalizar_binario(num):
-    binary_representation = decimal_a_binario(num)
+    binary_representation = decimal_a_binario_variacion(num)
     punto_decimal = binary_representation.index('.')
     first_one_index = binary_representation.index('1')
     
@@ -366,29 +405,7 @@ def calcular_exponente(num):
 def determinar_bit_de_signo(num):
     return 1 if num < 0 else 0
 
-def decimal_a_binario(num):
-    if num == 0:
-        return "0.0"
-    
-    signo = '-' if num < 0 else ''
-    num = abs(num)
-    entero, decimal = str(num).split('.')
-    entero = int(entero)
-    decimal = float("0." + decimal)
-    
-    binario_entero = bin(entero)[2:]
-    
-    binario_decimal = ""
-    precision = 23
-    while decimal > 0 and len(binario_decimal) < precision:
-        decimal *= 2
-        if decimal >= 1:
-            binario_decimal += "1"
-            decimal -= 1
-        else:
-            binario_decimal += "0"
-    
-    return f"{signo}{binario_entero}.{binario_decimal}"
+
 
 def obtener_punto_flotante_IEEE754(num):
     signo = determinar_bit_de_signo(num)
@@ -422,12 +439,90 @@ def ieee754_to_decimal(ieee754_str):
 
     return result
 
-# Funciones de menú
+
+# FUNCIONES DE CONVERSION DE DECIMAL A C1, C2 Y SyM
+
+def es_valido_SyM_o_C1(decimal, bits):
+    # Calcular el rango de Signo y Magnitud (SyM)
+    rango_min = -2**(bits - 1) + 1
+    rango_max = 2**(bits - 1) - 1
+    
+    # Verificar si el decimal está dentro del rango
+    if rango_min <= decimal <= rango_max:
+        return 1
+    else:
+        return 0
+
+def es_valido_Ca2(decimal, bits):
+    # Calcular el rango de Complemento a 2 (Ca2)
+    rango_min = -2**(bits - 1)
+    rango_max = 2**(bits - 1) - 1
+    
+    # Verificar si el decimal está dentro del rango
+    if rango_min <= decimal <= rango_max:
+        return 1
+    else:
+        return 0
+
+def decimal_a_complemento_a_1(decimal, bits):
+    rango_min = -2**(bits - 1) + 1
+    rango_max = 2**(bits - 1) - 1
+    if es_valido_SyM_o_C1(decimal, bits):
+        binario = decimal_a_binario(abs(decimal), bits)
+        if decimal < 0:
+            # Invertir los bits para obtener el complemento a 1
+            complemento_a_1 = ''.join('1' if bit == '0' else '0' for bit in binario)
+        else:
+            complemento_a_1 = binario
+        print(f"El número {decimal} en complemento a 1 es: {complemento_a_1}")
+        print(f"El rango es: ({rango_min}, {rango_max})")
+    else:
+        print(f"El número {decimal} está fuera del rango ({rango_min}, {rango_max})")
+
+def decimal_a_complemento_a_2(decimal, bits):
+    rango_min = -2**(bits - 1)
+    rango_max = 2**(bits - 1) - 1
+    if es_valido_Ca2(decimal, bits):
+        binario = decimal_a_binario(abs(decimal), bits)
+        if decimal < 0:
+            # Invertir los bits para obtener el complemento a 1
+            complemento_a_1 = ''.join('1' if bit == '0' else '0' for bit in binario)
+            # Sumar 1 para obtener el complemento a 2
+            complemento_a_2 = bin(int(complemento_a_1, 2) + 1)[2:]
+            # Asegurarse de que el resultado tenga la longitud correcta
+            complemento_a_2 = complemento_a_2.zfill(bits)
+        else:
+            complemento_a_2 = binario
+        print(f"El número {decimal} en complemento a 2 es: {complemento_a_2}")
+        print(f"El rango es: ({rango_min}, {rango_max})")
+    else:
+
+        print(f"El número {decimal} está fuera del rango ({rango_min}, {rango_max})")
+
+
+def decimal_a_signo_y_magnitud(decimal, bits):
+    rango_min = -2**(bits - 1) + 1
+    rango_max = 2**(bits - 1) - 1
+    if es_valido_SyM_o_C1(decimal, bits):
+        binario = decimal_a_binario(abs(decimal), bits - 1)
+        if decimal < 0:
+            signo_y_magnitud = '1' + binario
+        else:
+            signo_y_magnitud = '0' + binario
+        print(f"El número {decimal} en signo y magnitud es: {signo_y_magnitud}")
+        print(f"El rango es: ({rango_min}, {rango_max})")
+    else:
+
+        print(f"El número {decimal} está fuera del rango ({rango_min}, {rango_max})")
+
+
+# FUNCIONES DE MENU
 def bcd_conversion():
     while True:
         try:
             decimal_str = input("\nIngrese un número decimal para convertir (o 'q' para salir): ")
             if decimal_str.lower() == 'q':
+                clear_screen()
                 break
             float(decimal_str)  # Verificar si es un número válido
             if float(decimal_str) < 0:
@@ -495,7 +590,7 @@ def decimal_to_ieee754_conversion():
 
             print("\nDatos del número en punto flotante:")
             print(f'Número ingresado: {num}')
-            print(f'Representación binaria: {decimal_a_binario(num)}')
+            print(f'Representación binaria: {decimal_a_binario_variacion(num)}')
             print(f'Binario normalizado: {binario_normalizado}')
             print(f'Mantisa: {mantisa}')
             print(f'Exponente: {exponente}')
@@ -585,6 +680,43 @@ def es_cadena_bits_valida(cadena_bits):
     return all(bit in '01' for bit in cadena_bits)
 
 
+
+def menu_C1_C2_SM():
+    while True:
+        decimal_input = input("\nIngrese un número decimal (o 'Q' para terminar): ").strip()
+        if decimal_input.upper() == 'Q':
+            clear_screen()
+            break
+        try:
+            decimal = int(decimal_input)
+            bits = int(input("Ingrese la cantidad de bits: "))
+        except ValueError:
+            print("Entrada no válida. Intente nuevamente.")
+            continue
+
+        print("\nSeleccione el tipo de conversión: C1 - Complemento a 1 - C2 - Complemento a 2 - SM - Signo y Magnitud")
+        opcion = input("Ingrese su opción (C1, C2, SM) o 'Q' para terminar: ").strip().upper()
+
+        if opcion == 'C1':
+            decimal_a_complemento_a_1(decimal, bits)
+            print()
+        elif opcion == 'C2':
+            decimal_a_complemento_a_2(decimal, bits)
+            print()
+        elif opcion == 'SM':
+            decimal_a_signo_y_magnitud(decimal, bits)
+            print()
+        elif opcion == 'Q':
+            clear_screen()
+            break
+        else:
+            print("Opción no válida. Intente nuevamente.")
+
+
+
+
+# FUNCION MENU PRINCIPAL
+
 def main_menu():
     clear_screen()
     while True:
@@ -595,9 +727,10 @@ def main_menu():
         print("4. Conversión de decimal a IEEE754 32 bits")
         print("5. Conversión de IEEE754 32 bits a decimal")
         print("6. Conversión de cadena de bits a representacion punto flotante")
-        print("7. Salir")
+        print("7. Conversión de decimal a C1, C2 y SyM")
+        print("8. Salir")
         
-        choice = input("Seleccione una opción (1-7): ")
+        choice = input("Seleccione una opción (1-8): ")
         
         if choice == '1':
             clear_screen()
@@ -617,6 +750,9 @@ def main_menu():
         elif choice == '6':
             cadena_bits_a_punto_flotante()
         elif choice == '7':
+            clear_screen()
+            menu_C1_C2_SM()
+        elif choice == '8':
             clear_screen()
             print("Gracias por usar el programa. ¡Hasta luego!")
             print("Presione Enter para salir...")
