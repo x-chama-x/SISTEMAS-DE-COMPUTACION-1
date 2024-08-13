@@ -720,14 +720,14 @@ def menu_C1_C2_SM():
 def main_menu():
     clear_screen()
     while True:
-        print("\n--- Menú Principal ---")
+        print("\n--- Sistemas de conversion (sistemas de computacion 1) ---")
         print("1. Conversión a códigos BCD")
         print("2. Conversión a código Gray")
         print("3. Conversión a código Johnson")
         print("4. Conversión de decimal a IEEE754 32 bits")
         print("5. Conversión de IEEE754 32 bits a decimal")
         print("6. Conversión de cadena de bits a representacion punto flotante")
-        print("7. Conversión de decimal a C1, C2 y SyM")
+        print("7. Conversión de decimal a C1, C2 y SyM con cantidad de bits específica")
         print("8. Salir")
         
         choice = input("Seleccione una opción (1-8): ")
