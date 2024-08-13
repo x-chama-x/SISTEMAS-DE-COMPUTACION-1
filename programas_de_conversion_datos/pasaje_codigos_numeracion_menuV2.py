@@ -18,7 +18,7 @@ def decimal_a_binario(decimal, bits):
     return binario
 
 
-def decimal_a_binario_variacion(num):
+def decimal_fraccionario_a_binario_fraccionario(num):
     if num == 0:
         return "0.0"
     
@@ -373,7 +373,7 @@ def decimal_to_johnson(decimal, bits):
 
 
 def calcular_exponente_real(num):
-    binary_representation = decimal_a_binario_variacion(num)
+    binary_representation = decimal_fraccionario_a_binario_fraccionario(num)
     punto_decimal = binary_representation.index('.')
     first_one_index = binary_representation.index('1')
     if first_one_index < punto_decimal:
@@ -382,7 +382,7 @@ def calcular_exponente_real(num):
         return punto_decimal - first_one_index
 
 def normalizar_binario(num):
-    binary_representation = decimal_a_binario_variacion(num)
+    binary_representation = decimal_fraccionario_a_binario_fraccionario(num)
     punto_decimal = binary_representation.index('.')
     first_one_index = binary_representation.index('1')
     
@@ -500,6 +500,32 @@ def decimal_a_complemento_a_2(decimal, bits):
         print(f"El número {decimal} está fuera del rango ({rango_min}, {rango_max})")
 
 
+def is_positive(decimal):
+    return decimal >= 0
+
+def add_sign_bit(binary):
+    return '0' + binary
+
+def complemento_a_1_sin_rango(binary):
+    return ''.join('1' if bit == '0' else '0' for bit in binary)
+
+def decimal_to_complemento_a_1(decimal, bits):
+    binary = decimal_to_binary(abs(decimal), bits)
+    if is_positive(decimal):
+        return complemento_a_1_sin_rango(binary)
+    else:
+        signed_binary = add_sign_bit(binary)
+        return complemento_a_1_sin_rango(signed_binary)
+    
+def complemento_a_2_sin_rango(binary):
+    # Convertir el binario a complemento a 1
+    comp_a_1 = complemento_a_1_sin_rango(binary)
+    # Sumar 1 al complemento a 1
+    comp_a_2 = bin(int(comp_a_1, 2) + 1)[2:]
+    # Asegurarse de que el resultado tenga la misma longitud que el binario original
+    return comp_a_2.zfill(len(binary))
+
+
 def decimal_a_signo_y_magnitud(decimal, bits):
     rango_min = -2**(bits - 1) + 1
     rango_max = 2**(bits - 1) - 1
@@ -590,7 +616,7 @@ def decimal_to_ieee754_conversion():
 
             print("\nDatos del número en punto flotante:")
             print(f'Número ingresado: {num}')
-            print(f'Representación binaria: {decimal_a_binario_variacion(num)}')
+            print(f'Representación binaria: {decimal_fraccionario_a_binario_fraccionario(num)}')
             print(f'Binario normalizado: {binario_normalizado}')
             print(f'Mantisa: {mantisa}')
             print(f'Exponente: {exponente}')
@@ -712,7 +738,36 @@ def menu_C1_C2_SM():
         else:
             print("Opción no válida. Intente nuevamente.")
 
+def menu_C1_C2_sin_rango():
+    while True:
+        decimal_input = input("Ingrese un número decimal (o 'Q' para terminar): ").strip()
+        if decimal_input.upper() == 'Q':
+            clear_screen()
+            break
+        try:
+            decimal = int(decimal_input)
+        except ValueError:
+            print("Entrada no válida. Intente nuevamente.")
+            continue
 
+        print("\nSeleccione el tipo de conversión:")
+        print("1 - Complemento a 1")
+        print("2 - Complemento a 2")
+        opcion = input("Ingrese su opción (1, 2) o 'Q' para terminar: ").strip().upper()
+
+        if opcion == '1':
+            resultado = decimal_to_complemento_a_1(decimal, 0)
+            print(f"El numero {decimal} en complemento a 1 es: {resultado}\n")
+        elif opcion == '2':
+            binary = decimal_to_binary(abs(decimal), 0)
+            if not is_positive(decimal):
+                binary = add_sign_bit(binary)
+            resultado = complemento_a_2_sin_rango(binary)
+            print(f"El numero {decimal} en complemento a 2 es: {resultado}\n")
+        elif opcion == 'Q':
+            break
+        else:
+            print("Opción no válida. Intente nuevamente.")
 
 
 # FUNCION MENU PRINCIPAL
@@ -728,7 +783,8 @@ def main_menu():
         print("5. Conversión de IEEE754 32 bits a decimal")
         print("6. Conversión de cadena de bits a representacion punto flotante")
         print("7. Conversión de decimal a C1, C2 y SyM con cantidad de bits específica")
-        print("8. Salir")
+        print("8. Conversión de decimal a C1, C2 y SyM sin cantidad de bits específica")
+        print("9. Salir")
         
         choice = input("Seleccione una opción (1-8): ")
         
@@ -753,6 +809,9 @@ def main_menu():
             clear_screen()
             menu_C1_C2_SM()
         elif choice == '8':
+            clear_screen()
+            menu_C1_C2_sin_rango()
+        elif choice == '9':
             clear_screen()
             print("Gracias por usar el programa. ¡Hasta luego!")
             print("Presione Enter para salir...")
