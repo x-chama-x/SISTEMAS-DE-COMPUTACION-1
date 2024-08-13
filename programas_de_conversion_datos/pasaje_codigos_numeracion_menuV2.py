@@ -783,7 +783,7 @@ def main_menu():
         print("5. Conversión de IEEE754 32 bits a decimal")
         print("6. Conversión de cadena de bits a representacion punto flotante")
         print("7. Conversión de decimal a C1, C2 y SyM con cantidad de bits específica")
-        print("8. Conversión de decimal a C1, C2 y SyM sin cantidad de bits específica")
+        print("8. Conversión de decimal a C1, C2 sin cantidad de bits específica")
         print("9. Salir")
         
         choice = input("Seleccione una opción (1-8): ")
