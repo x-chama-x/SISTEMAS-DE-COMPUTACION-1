@@ -740,7 +740,7 @@ def menu_C1_C2_SM():
 
 def menu_C1_C2_sin_rango():
     while True:
-        decimal_input = input("Ingrese un número decimal (o 'Q' para terminar): ").strip()
+        decimal_input = input("\nIngrese un número decimal (o 'Q' para terminar): ").strip()
         if decimal_input.upper() == 'Q':
             clear_screen()
             break
