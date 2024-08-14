@@ -786,7 +786,7 @@ def main_menu():
         print("8. Conversión de decimal a C1, C2 sin cantidad de bits específica")
         print("9. Salir")
         
-        choice = input("Seleccione una opción (1-8): ")
+        choice = input("Seleccione una opción (1-9): ")
         
         if choice == '1':
             clear_screen()
