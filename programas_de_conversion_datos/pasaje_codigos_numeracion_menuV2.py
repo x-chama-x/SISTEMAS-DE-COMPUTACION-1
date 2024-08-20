@@ -8,7 +8,10 @@ def clear_screen():
 # FUNCIONES DUPLICADAS DE CONVERSION DE DECIMAL A BINARIO
 
 def decimal_to_binary(decimal, bits):
-    return format(abs(decimal), f'0{bits}b')
+    binary = format(abs(decimal), f'b')
+    if decimal < 0:
+        binary = binary.zfill(bits)
+    return binary
 
 def decimal_a_binario(decimal, bits):
     # Convertir el número decimal a binario y eliminar el prefijo '0b'
@@ -528,16 +531,15 @@ def complemento_a_2_sin_rango(binary):
     return comp_a_2.zfill(len(binary))
 
 def decimal_to_c1_c2(decimal):
-    if decimal >= 0:
-        raise ValueError("Solo se aceptan números negativos para la conversión a C1 y C2.")
-    
     bits = determine_bits(decimal)
     binary = decimal_to_binary(decimal, bits)
     
-    c1 = complemento_a_1_sin_rango(binary)
-    c2 = complemento_a_2_sin_rango(binary)
-    
-    return bits, binary, c1, c2
+    if decimal < 0:
+        c1 = complemento_a_1_sin_rango(binary)
+        c2 = complemento_a_2_sin_rango(binary)
+        return bits, binary, c1, c2
+    else:
+        return bits, binary, None, None
 
 
 def decimal_to_complemento_a_1(decimal, bits):
@@ -771,36 +773,34 @@ def menu_C1_C2_SM():
 
 def menu_C1_C2_sin_rango():
     while True:
-        decimal_input = input("Ingrese un número decimal negativo (o 'Q' para terminar): ").strip()
+        decimal_input = input("Ingrese un número decimal (o 'Q' para terminar): ").strip()
         if decimal_input.upper() == 'Q':
             clear_screen()
             break
         try:
             decimal = int(decimal_input)
-            if decimal >= 0:
-                print("Error: Solo se aceptan números negativos.")
-                continue
-            
             bits, binary, c1, c2 = decimal_to_c1_c2(decimal)
             
             print(f"\nNúmero: {decimal}")
             print(f"Representación en {bits} bits:")
             print(f"Binario natural: {binary}")
             
-            print("\nSeleccione el tipo de conversión:")
-            print("1 - Complemento a 1")
-            print("2 - Complemento a 2")
-            opcion = input("Ingrese su opción (1, 2) o 'Q' para terminar: ").strip().upper()
-            
-            if opcion == '1':
-                print(f"Complemento a 1: {c1}")
-            elif opcion == '2':
-                print(f"Complemento a 2: {c2}")
-            elif opcion == 'Q':
-                clear_screen()
-                break
+            if decimal < 0:
+                print("\nSeleccione el tipo de conversión:")
+                print("1 - Complemento a 1")
+                print("2 - Complemento a 2")
+                opcion = input("Ingrese su opción (1, 2) o 'Q' para terminar: ").strip().upper()
+                
+                if opcion == '1':
+                    print(f"Complemento a 1: {c1}")
+                elif opcion == '2':
+                    print(f"Complemento a 2: {c2}")
+                elif opcion == 'Q':
+                    break
+                else:
+                    print("Opción no válida. Volviendo al menú principal.")
             else:
-                print("Opción no válida. Volviendo al menú principal.")
+                print("Nota: Un número positivo tiene la misma representación en binario natural para Complemento a 1 o Complemento a 2.")
             
             print()  # Línea en blanco para mejor legibilidad
             
