@@ -147,6 +147,10 @@ def calcular_representacion_de_pto_flotante_con_mantisa_fraccionaria_con_bit_imp
     base = 2
     resultado = valor_mantisa * (base ** valor_exponente)
 
+    # Si la mantisa es BCS, el resultado debe ser negativo
+    if signo_mantisa:
+        resultado = -resultado
+
     return resultado
 
 
