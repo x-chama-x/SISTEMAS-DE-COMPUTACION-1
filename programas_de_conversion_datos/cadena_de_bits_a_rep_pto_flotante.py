@@ -124,9 +124,19 @@ def calcular_mantisa_fraccionaria(cadena_bits, cant_bits_mantisa, signo_mantisa)
 
 
 def calcular_representacion_de_pto_flotante_con_mantisa_fraccionaria_con_bit_implicito(mantisa, cadena_bits, cant_bits_mantisa, signo_mantisa, signo_exponente, tipo_exponente):
+    # Ignorar el bit de signo si es BCS
+    if signo_mantisa:
+        mantisa = cadena_bits[1:cant_bits_mantisa]
+    else:
+        mantisa = cadena_bits[:cant_bits_mantisa]
+
+    # Agregar el bit implícito
+    bit_implicito = '0.1'
+    mantisa_con_bit_implicito = bit_implicito + mantisa
+
     # Convertir la mantisa a un valor decimal
-    valor_mantisa = 0  # El bit implícito
-    for i, bit in enumerate(mantisa[2:], 1):  # Ignoramos '0.' al principio
+    valor_mantisa = 0
+    for i, bit in enumerate(mantisa_con_bit_implicito[2:], 1):  # Ignorar '0.'
         if bit == '1':
             valor_mantisa += 2 ** -i
 
@@ -161,10 +171,6 @@ def calcular_representacion_de_pto_flotante(mantisa, exponente, signo_mantisa, s
     # Calcular la representación en punto flotante
     base = 2
     resultado = valor_mantisa * (base ** valor_exponente)
-
-    # imprimir datos de depuración
-    print("Mantisa:", valor_mantisa)
-    print("Exponente:", valor_exponente)
     
     return resultado
 
