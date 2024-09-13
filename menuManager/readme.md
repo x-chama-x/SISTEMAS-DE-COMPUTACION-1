@@ -6,7 +6,7 @@ Este programa es una herramienta educativa desarrollada para la asignatura de Si
 
 El menú principal del programa ofrece las siguientes opciones:
 
-1. **Conversión a códigos BCD**: Convierte un número decimal a su representación en código BCD (Binary-Coded Decimal).
+1. **Conversión a códigos BCD**: Convierte un número decimal a su representación en los distintos códigos BCD (Binary-Coded Decimal).
 2. **Conversión a código Gray**: Convierte un número binario a su representación en código Gray.
 3. **Conversión a código Johnson**: Convierte un número binario a su representación en código Johnson.
 4. **Conversión de decimal a IEEE754 32 bits**: Convierte un número decimal a su representación en formato IEEE754 de 32 bits.

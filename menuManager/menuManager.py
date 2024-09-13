@@ -342,21 +342,6 @@ def decimal_to_bcd_5421(decimal_str):
         bcd += '.' + ''.join(mapping[d] for d in decimal_part)
     return bcd
 
-def decimal_to_packed_bcd(decimal_str):
-    integer_part, _, decimal_part = decimal_str.partition('.')
-    if len(integer_part) % 2 != 0:
-        integer_part = '0' + integer_part
-    packed = ''
-    for i in range(0, len(integer_part), 2):
-        packed += format(int(integer_part[i]), '04b') + format(int(integer_part[i+1]), '04b')
-    if decimal_part:
-        if len(decimal_part) % 2 != 0:
-            decimal_part += '0'
-        packed += '.'
-        for i in range(0, len(decimal_part), 2):
-            packed += format(int(decimal_part[i]), '04b') + format(int(decimal_part[i+1]), '04b')
-    return packed
-
 def print_bcd_table(decimal_str):
     print(f"Decimal: {decimal_str}")
     print(f"BCD:                {decimal_to_bcd(decimal_str)}")
@@ -364,7 +349,6 @@ def print_bcd_table(decimal_str):
     print(f"BCD EXC3:           {decimal_to_bcd_exc3(decimal_str)}")
     print(f"BCD 8421:           {decimal_to_bcd_8421(decimal_str)}")
     print(f"BCD 5421:           {decimal_to_bcd_5421(decimal_str)}")
-    print(f"BCD Empaquetado:    {decimal_to_packed_bcd(decimal_str)}")
     print()
 
 # FUNCIONES DE CONVERSION DE CODIGOS GRAY Y JOHNSON
@@ -823,7 +807,7 @@ def menu_C1_C2_SM():
 
 def menu_C1_C2_sin_rango():
     while True:
-        decimal_input = input("Ingrese un número decimal (o 'Q' para terminar): ").strip()
+        decimal_input = input("\nIngrese un número decimal (o 'Q' para terminar): ").strip()
         if decimal_input.upper() == 'Q':
             clear_screen()
             break
@@ -863,7 +847,7 @@ def menu_calculadora_binaria():
     while True:
         try:
             # Validate number of bits input
-            longitud_bits = input("Ingrese el número de bits para la representación (o 'q' para volver al menú principal): ")
+            longitud_bits = input("\nIngrese el número de bits para la representación (o 'q' para volver al menú principal): ")
             if longitud_bits.lower() == 'q':
                 clear_screen()
                 break
