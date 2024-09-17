@@ -13,7 +13,7 @@ def decimal_to_binary(decimal, bits):
         binary = binary.zfill(bits)
     return binary
 
-def decimal_a_binario(decimal, bits):
+def decimal_to_binario(decimal, bits):
     # Convertir el número decimal a binario y eliminar el prefijo '0b'
     binario = bin(decimal)[2:]
     # Rellenar con ceros a la izquierda para asegurar la cantidad de bits
@@ -469,7 +469,7 @@ def decimal_a_complemento_a_1(decimal, bits):
     rango_min = -2**(bits - 1) + 1
     rango_max = 2**(bits - 1) - 1
     if es_valido_SyM_o_C1(decimal, bits):
-        binario = decimal_a_binario(abs(decimal), bits)
+        binario = decimal_to_binario(abs(decimal), bits)
         if decimal < 0:
             # Invertir los bits para obtener el complemento a 1
             complemento_a_1 = ''.join('1' if bit == '0' else '0' for bit in binario)
@@ -484,7 +484,7 @@ def decimal_a_complemento_a_2(decimal, bits):
     rango_min = -2**(bits - 1)
     rango_max = 2**(bits - 1) - 1
     if es_valido_Ca2(decimal, bits):
-        binario = decimal_a_binario(abs(decimal), bits)
+        binario = decimal_to_binario(abs(decimal), bits)
         if decimal < 0:
             # Invertir los bits para obtener el complemento a 1
             complemento_a_1 = ''.join('1' if bit == '0' else '0' for bit in binario)
@@ -561,7 +561,7 @@ def decimal_a_signo_y_magnitud(decimal, bits):
     rango_min = -2**(bits - 1) + 1
     rango_max = 2**(bits - 1) - 1
     if es_valido_SyM_o_C1(decimal, bits):
-        binario = decimal_a_binario(abs(decimal), bits - 1)
+        binario = decimal_to_binario(abs(decimal), bits - 1)
         if decimal < 0:
             signo_y_magnitud = '1' + binario
         else:
